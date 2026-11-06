@@ -1,0 +1,309 @@
+{
+  "info": {
+    "name": "caPHEnue API Collection",
+    "description": "Bộ test API hoàn chỉnh cho hệ thống Quản lý Khách hàng Thân thiết caPHEnue (F&B Loyalty Platform)\nBackend: http://localhost:3000/api",
+    "_postman_id": "caphenue-api-v1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:3000/api", "type": "string" },
+    { "key": "api_key", "value": "caphenue_api_key_2026", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "🔧 Health",
+      "item": [
+        {
+          "name": "Ping - Health Check",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/ping",
+            "description": "Kiểm tra server đang chạy"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔐 Authentication & Nhân Viên",
+      "item": [
+        {
+          "name": "Login Admin (admin/123456)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/admin",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"123456\"\n}"
+            },
+            "description": "Đăng nhập tài khoản quản trị. Trả về JWT token và thông tin user."
+          }
+        },
+        {
+          "name": "Login Staff (staff/123456)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/admin",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"staff\",\n  \"password\": \"123456\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login Khách Hàng (SĐT/123456)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/customer",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"0912345678\",\n  \"password\": \"123456\"\n}"
+            },
+            "description": "Đăng nhập khách hàng thân thiết bằng SĐT và mật khẩu."
+          }
+        },
+        {
+          "name": "GET Danh sách nhân viên",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/users",
+            "description": "Lấy danh sách nhân viên: tên, SĐT, username, vai trò Admin/Thu ngân."
+          }
+        },
+        {
+          "name": "PUT Đổi mật khẩu nhân viên",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/users/2/password",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"new_password\": \"123456\"\n}"
+            },
+            "description": "Admin hoặc nhân viên đổi mật khẩu mới (tối thiểu 6 ký tự)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "☕ Products & Categories",
+      "item": [
+        {
+          "name": "GET Tất cả sản phẩm",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/products",
+            "description": "Lấy danh sách sản phẩm đang hoạt động"
+          }
+        },
+        {
+          "name": "GET Danh mục sản phẩm",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/product-categories"
+          }
+        },
+        {
+          "name": "PATCH Bật/Tắt sản phẩm",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/products/1/toggle"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏷️ Promotions",
+      "item": [
+        {
+          "name": "GET Tất cả khuyến mãi",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/promotions?active=all"
+          }
+        },
+        {
+          "name": "POST Validate mã HE2026",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/promotions/validate",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"HE2026\",\n  \"subtotal\": 80000\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🎁 Rewards & Vouchers",
+      "item": [
+        {
+          "name": "GET Tất cả ưu đãi đổi điểm",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/rewards",
+            "description": "6 ưu đãi chuẩn tỷ lệ 1 điểm = 400đ"
+          }
+        },
+        {
+          "name": "POST Đổi điểm lấy Voucher",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/rewards/1/redeem",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": 1\n}"
+            },
+            "description": "Đổi 50 điểm lấy voucher 20.000đ"
+          }
+        },
+        {
+          "name": "POST Áp dụng Voucher tại quầy (/vouchers/apply)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/vouchers/apply",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"UD-7K3F9A\",\n  \"subtotal\": 90000\n}"
+            },
+            "description": "Kiểm tra mã voucher UD-XXXX, tính tiền giảm và cập nhật trạng thái sang Đã sử dụng."
+          }
+        },
+        {
+          "name": "GET Kho Voucher cá nhân",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/redemptions"
+          }
+        }
+      ]
+    },
+    {
+      "name": "👥 Customers",
+      "item": [
+        {
+          "name": "GET Tất cả khách hàng",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/customers"
+          }
+        },
+        {
+          "name": "GET Tra cứu khách theo SĐT",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/customers/lookup?phone=0912345678",
+              "query": [{ "key": "phone", "value": "0912345678" }]
+            }
+          }
+        },
+        {
+          "name": "POST Đăng ký hội viên mới",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/customers",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Lê Thị Hoa\",\n  \"phone\": \"0977666555\",\n  \"password\": \"123456\",\n  \"email\": \"hoa.le@gmail.com\",\n  \"gender\": \"Nữ\"\n}"
+            }
+          }
+        },
+        {
+          "name": "POST Điều chỉnh điểm thủ công (/adjust-points)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/customers/4/adjust-points",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"points\": 30,\n  \"reason\": \"Bù điểm sự cố hệ thống\"\n}"
+            },
+            "description": "Admin cộng hoặc trừ điểm thủ công kèm lý do."
+          }
+        }
+      ]
+    },
+    {
+      "name": "🛒 Orders",
+      "item": [
+        {
+          "name": "GET Danh sách hóa đơn chi tiết",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/orders?limit=20",
+              "query": [{ "key": "limit", "value": "20" }]
+            },
+            "description": "Lấy danh sách hóa đơn chi tiết kèm số điểm tích được và mã voucher đã áp dụng để đổ vào trang Admin."
+          }
+        },
+        {
+          "name": "POST Tạo đơn POS - Chiết khấu theo hạng",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/orders",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": 3,\n  \"staff_id\": 1,\n  \"items\": [\n    { \"product_id\": 5, \"quantity\": 2 }\n  ],\n  \"payment_method\": \"CASH\",\n  \"channel\": \"POS\"\n}"
+            },
+            "description": "Khách Kim Cương giảm 8% theo hạng (Không dùng voucher)."
+          }
+        },
+        {
+          "name": "POST Tạo đơn POS - Dùng Voucher (No Double-Dipping)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/orders",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": 3,\n  \"staff_id\": 1,\n  \"items\": [\n    { \"product_id\": 5, \"quantity\": 2 }\n  ],\n  \"voucher_code\": \"UD-9M2P4X\",\n  \"payment_method\": \"CASH\",\n  \"channel\": \"POS\"\n}"
+            },
+            "description": "Dùng Voucher trừ tiền trực tiếp, không cộng dồn giảm giá theo hạng."
+          }
+        }
+      ]
+    },
+    {
+      "name": "📊 Dashboard & Reports",
+      "item": [
+        {
+          "name": "GET Báo cáo tổng hợp (/reports/dashboard)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/reports/dashboard",
+            "description": "Trả về 4 thẻ tóm tắt (Tổng doanh thu, Điểm phát hành, Điểm đã đổi, Tiền giảm qua Loyalty) và bảng kê doanh thu theo ngày."
+          }
+        },
+        {
+          "name": "GET Báo cáo doanh thu chi tiết",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/reports/revenue"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏅 Tiers",
+      "item": [
+        {
+          "name": "GET Hạng thành viên",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/tiers"
+          }
+        }
+      ]
+    }
+  ]
+}

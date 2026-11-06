@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+backend/node_modules/
+
+# Environment Variables & Secrets
+.env
+backend/.env
+*.local
+
+# System & IDE files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+
+# Agent & AI caches
+.agents/
+.claude/

@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>caPHEnue - Quản Trị Hệ Thống (Backend)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ==================== ĐĂNG NHẬP ADMIN ==================== -->
+  <div id="admin-login-screen" class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <img src="images/logo_hoa_dao.png" alt="Logo" class="login-logo">
+        <h2>Đăng Nhập Quản Trị / Thu Ngân</h2>
+        <p>Hệ thống Quản lý Khách hàng Thân thiết caPHEnue</p>
+      </div>
+      <form onsubmit="handleAdminLoginPage(event)" class="login-form">
+        <div class="form-group">
+          <label>Tên đăng nhập</label>
+          <input type="text" id="admin-user-input" class="form-control" value="admin" required>
+        </div>
+        <div class="form-group">
+          <label>Mật khẩu</label>
+          <input type="password" id="admin-pass-input" class="form-control" value="123456" required>
+        </div>
+        <div id="login-error" class="login-error hidden" style="color: #EF4444; font-size: 0.88rem; margin-bottom: 10px;"></div>
+        <div class="login-quick-creds">
+          <small>Tài khoản mẫu: <strong>admin</strong> / 123456 (Quản trị viên) hoặc <strong>staff</strong> / 123456 (Thu ngân POS)</small>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" id="login-btn">Đăng Nhập Hệ Thống</button>
+        <a href="index.html" class="btn btn-text btn-block">&#8592; Quay về Trang Khách Hàng</a>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== KHUNG LÀM VIỆC ADMIN (Backend) ==================== -->
+  <div id="admin-app-layout" class="admin-layout hidden">
+    <!-- Sidebar bên trái -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-brand">
+        <img src="images/logo_hoa_dao.png" alt="Logo" class="sidebar-logo">
+        <div>
+          <div class="sidebar-title">caPHEnue</div>
+          <div class="sidebar-sub">Admin Portal (Backend)</div>
+        </div>
+      </div>
+
+      <div class="sidebar-user-card">
+        <div class="user-avatar" id="current-user-avatar">TH</div>
+        <div class="user-meta">
+          <div class="user-fullname" id="current-user-name">Trịnh Thanh Học</div>
+          <div class="user-role-badge" id="current-user-role">ADMIN</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-menu">
+        <div class="menu-label">Nghiệp vụ quầy</div>
+        <a href="javascript:void(0)" class="menu-item active" id="tab-pos" onclick="openAdminTab('pos')">
+          <span class="menu-icon">&#x1F6D2;</span> Bán hàng &amp; Tích điểm (POS)
+        </a>
+        <a href="javascript:void(0)" class="menu-item" id="tab-tables" onclick="openAdminTab('tables')">
+          <span class="menu-icon">&#x1FA91;</span> Sơ đồ bàn &amp; Đặt chỗ
+        </a>
+        <a href="javascript:void(0)" class="menu-item" id="tab-orders" onclick="openAdminTab('orders')">
+          <span class="menu-icon">&#x1F4D1;</span> Hóa đơn &amp; Đơn hàng
+        </a>
+
+        <div class="menu-label">Khách hàng &amp; Thân thiết</div>
+        <a href="javascript:void(0)" class="menu-item" id="tab-dashboard" onclick="openAdminTab('dashboard')">
+          <span class="menu-icon">&#x1F4CA;</span> Bảng điều khiển (Dashboard)
+        </a>
+        <a href="javascript:void(0)" class="menu-item" id="tab-customers" onclick="openAdminTab('customers')">
+          <span class="menu-icon">&#x1F465;</span> Quản lý khách hàng
+        </a>
+        <a href="javascript:void(0)" class="menu-item" id="tab-tiers" onclick="openAdminTab('tiers')">
+          <span class="menu-icon">&#x1F3C5;</span> Hạng thành viên
+        </a>
+        <a href="javascript:void(0)" class="menu-item" id="tab-rewards" onclick="openAdminTab('rewards')">
+          <span class="menu-icon">&#x1F381;</span> Ưu đãi đổi điểm
+        </a>
+        <a href="javascript:void(0)" class="menu-item" id="tab-promos" onclick="openAdminTab('promos')">
+          <span class="menu-icon">&#x1F3F7;</span> Chương trình khuyến mãi
+        </a>
+
+        <div class="menu-label">Nhân sự &amp; Vận hành</div>
+        <a href="javascript:void(0)" class="menu-item" id="tab-staff" onclick="openAdminTab('staff')">
+          <span class="menu-icon">&#x1F464;</span> Quản lý nhân viên &amp; Lương
+        </a>
+
+        <div class="menu-label">Hệ thống</div>
+        <a href="javascript:void(0)" class="menu-item" id="tab-products" onclick="openAdminTab('products')">
+          <span class="menu-icon">&#x2615;</span> Sản phẩm &amp; Danh mục
+        </a>
+        <a href="javascript:void(0)" class="menu-item" id="tab-reports" onclick="openAdminTab('reports')">
+          <span class="menu-icon">&#x1F4C8;</span> Báo cáo doanh thu &amp; Điểm
+        </a>
+        <a href="javascript:void(0)" class="menu-item" id="tab-users" onclick="openAdminTab('users')">
+          <span class="menu-icon">&#x1F511;</span> Tài khoản nhân viên
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="index.html" class="btn btn-outline-light btn-block">&#x1F310; Ra website Khách Hàng</a>
+        <button class="btn btn-danger btn-block" onclick="handleAdminLogout()">Đăng xuất</button>
+      </div>
+    </aside>
+
+    <!-- Nội dung chính Admin -->
+    <div class="admin-main-content">
+
+      <!-- ===== POS BÁN HÀNG TẠI QUẦY ===== -->
+      <div id="admin-tab-pos" class="admin-panel active">
+        <div class="pos-workspace">
+          <div class="pos-menu-col">
+            <div class="pos-header-bar">
+              <div class="pos-category-pills" id="pos-category-filter">
+                <!-- JS Render -->
+              </div>
+              <div class="pos-search">
+                <input type="text" id="pos-search-input" placeholder="Tìm tên món..." oninput="searchPosProducts(this.value)">
+              </div>
+            </div>
+            <div class="pos-products-grid" id="pos-products-list">
+              <!-- JS Render -->
+            </div>
+          </div>
+
+          <div class="pos-bill-col">
+            <div class="bill-card">
+              <div class="bill-header">
+                <h3>Hóa Đơn Bán Hàng Tại Quầy</h3>
+                <span class="invoice-no" id="pos-invoice-code">HD-POS</span>
+              </div>
+
+              <div class="pos-table-selector-row" style="margin: 6px 0 2px 0; display:flex; gap:6px; align-items:center; background:#FFF8F0; padding:4px 8px; border:1px solid #FFE0B2;">
+                <span style="font-size:0.78rem; font-weight:700; color:#3E2723; white-space:nowrap;">🪑 Bàn:</span>
+                <select id="pos-table-select" style="flex:1; padding:3px 6px; font-size:0.8rem; border:1px solid var(--border-color); background:#fff;">
+                  <option value="">-- Mang về / Chưa chọn bàn --</option>
+                </select>
+              </div>
+
+              <div class="customer-picker-box">
+                <label class="small-label">Khách hàng thành viên</label>
+                <div class="customer-search-row">
+                  <input type="tel" id="pos-cust-phone" placeholder="Nhập SĐT khách (VD: 0912345678)...">
+                  <button class="btn btn-sm btn-secondary" onclick="posLookupCustomer()">Tìm</button>
+                  <button class="btn btn-sm btn-outline" onclick="posSelectWalkin()">Vãng lai</button>
+                </div>
+                <div class="customer-badge-info" id="pos-cust-info" style="display:none;">
+                  <div class="info-row">
+                    <span class="cust-name" id="pos-cust-name"></span>
+                    <span class="badge" id="pos-cust-tier"></span>
+                  </div>
+                  <div class="info-row small text-muted">
+                    <span>Điểm khả dụng: <strong class="text-pink" id="pos-cust-points">0</strong></span>
+                    <span>Hệ số điểm: <strong id="pos-cust-multiplier">1.0x</strong></span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bill-items-list" id="pos-cart-items">
+                <div class="text-center text-muted" style="padding: 10px; font-size: 0.85rem;">Chưa có món nào trong hóa đơn</div>
+              </div>
+
+              <div class="bill-discounts-box">
+                <div class="promo-input-row">
+                  <input type="text" id="pos-promo-code" placeholder="Mã khuyến mãi (VD: HE2026)">
+                  <button class="btn btn-sm btn-outline" onclick="posApplyPromo()">Áp dụng</button>
+                </div>
+                <div class="promo-input-row">
+                  <input type="text" id="pos-reward-code" placeholder="Mã Voucher (UD-XXXXXX)">
+                  <button class="btn btn-sm btn-outline" id="btn-apply-voucher" onclick="posApplyRewardCode()">Áp dụng</button>
+                  <button class="btn btn-sm btn-text text-danger" id="btn-remove-voucher" onclick="posRemoveRewardCode()" style="display:none;">Hủy</button>
+                </div>
+              </div>
+
+              <div class="bill-calculation">
+                <div class="calc-row">
+                  <span>Tạm tính (Subtotal):</span>
+                  <strong id="pos-subtotal">0 đ</strong>
+                </div>
+                <div class="calc-row text-success">
+                  <span>Giảm theo hạng (<span id="pos-tier-percent">0%</span>):</span>
+                  <span id="pos-tier-discount">-0 đ</span>
+                </div>
+                <div class="calc-row text-primary">
+                  <span>Khuyến mãi (<span id="pos-promo-name">None</span>):</span>
+                  <span id="pos-promo-discount">-0 đ</span>
+                </div>
+                <div class="calc-row text-pink">
+                  <span>Voucher đổi điểm:</span>
+                  <span id="pos-reward-discount">-0 đ</span>
+                </div>
+                <div class="calc-row total-row">
+                  <span>TỔNG THANH TOÁN:</span>
+                  <span class="total-price" id="pos-final-total">0 đ</span>
+                </div>
+                <div class="calc-row points-earned-row">
+                  <span>Điểm tích lũy (BR1):</span>
+                  <span class="badge badge-point" id="pos-points-earned">+0 pts</span>
+                </div>
+              </div>
+
+              <div class="payment-method-selector" onchange="posHandlePaymentChange()">
+                <label><input type="radio" name="paymentMethod" value="CASH" checked> Tiền mặt</label>
+                <label><input type="radio" name="paymentMethod" value="TRANSFER"> Chuyển khoản QR (VietQR)</label>
+                <label><input type="radio" name="paymentMethod" value="CARD"> Thẻ ngân hàng</label>
+              </div>
+
+              <!-- Box Quét Mã VietQR Tự Động -->
+              <div id="pos-vietqr-box" style="display: none; text-align: center; margin: 12px 0; padding: 12px; background: #FFF5F7; border: 1px dashed #E8618C;">
+                <p style="font-weight: 700; color: #3E2723; margin: 0 0 6px 0; font-size: 0.88rem;">📱 Quét mã VietQR thanh toán:</p>
+                <img id="pos-vietqr-img" src="" alt="VietQR" style="width: 170px; height: 170px; object-fit: contain; border: 1px solid #E5E7EB; background: #fff;">
+                <p class="small text-muted" style="margin: 4px 0 0 0;">MB Bank • STK: 0901112233 • caPHEnue</p>
+              </div>
+
+              <div class="bill-actions">
+                <button class="btn btn-outline" onclick="posClearCart()">Hủy giỏ</button>
+                <button class="btn btn-primary btn-lg" onclick="posCheckout()">THANH TOÁN &amp; TÍCH ĐIỂM</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SƠ ĐỒ BÀN & QUẢN LÝ ĐẶT CHỖ (TABLES & RESERVATIONS) ===== -->
+      <div id="admin-tab-tables" class="admin-panel">
+        <div class="panel-header">
+          <div>
+            <h2>Sơ Đồ Bàn &amp; Quản Lý Đặt Chỗ (iPOS Enterprise Standard)</h2>
+            <p class="text-muted small">Quản lý sơ đồ bàn thời gian thực, bàn trống và danh sách phiếu đặt bàn tại quán</p>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-sm btn-outline" onclick="loadAdminTables()"><span class="menu-icon">&#x21BB;</span> Làm mới</button>
+            <button class="btn btn-sm btn-primary" onclick="openAddTableModal()">+ Thêm bàn mới</button>
+          </div>
+        </div>
+
+        <!-- 4 Thẻ KPI Sơ Đồ Bàn -->
+        <div class="kpi-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 20px;">
+          <div class="kpi-card">
+            <div class="kpi-icon icon-blue">&#x1FA91;</div>
+            <div class="kpi-meta">
+              <span class="kpi-title">Tổng số bàn</span>
+              <span class="kpi-value" id="kpi-tables-total">0</span>
+              <span class="kpi-note">Toàn bộ không gian</span>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon icon-green">&#x2705;</div>
+            <div class="kpi-meta">
+              <span class="kpi-title">Bàn trống (Sẵn sàng)</span>
+              <span class="kpi-value text-success" id="kpi-tables-available">0</span>
+              <span class="kpi-note">Đón khách vào ngồi</span>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon icon-pink">&#x1F465;</div>
+            <div class="kpi-meta">
+              <span class="kpi-title">Đang phục vụ</span>
+              <span class="kpi-value text-primary" id="kpi-tables-occupied">0</span>
+              <span class="kpi-note">Khách đang uống cafe</span>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon icon-gold">&#x1F4C5;</div>
+            <div class="kpi-meta">
+              <span class="kpi-title">Đã đặt trước</span>
+              <span class="kpi-value text-warning" id="kpi-tables-reserved">0</span>
+              <span class="kpi-note">Lịch hẹn giữ chỗ</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bộ Lọc Khu Vực -->
+        <div class="filter-bar" style="margin-bottom: 16px; display:flex; justify-content:space-between; align-items:center;">
+          <div class="pos-category-pills" id="table-area-filter">
+            <button class="pill active" id="pill-area-ALL" onclick="filterTablesArea('ALL')">Tất cả khu vực</button>
+            <button class="pill" id="pill-area-INDOOR" onclick="filterTablesArea('INDOOR')">🌸 Tầng 1 (Máy lạnh)</button>
+            <button class="pill" id="pill-area-OUTDOOR" onclick="filterTablesArea('OUTDOOR')">🌿 Tầng 2 (Sân vườn/Ban công)</button>
+            <button class="pill" id="pill-area-VIP" onclick="filterTablesArea('VIP')">⭐ Phòng VIP (Họp nhóm)</button>
+          </div>
+        </div>
+
+        <!-- Lưới Sơ Đồ Bàn Trực Quan -->
+        <div class="content-box" style="margin-bottom: 24px; padding: 20px;">
+          <div class="box-header" style="margin-bottom: 16px;">
+            <h3>Sơ Đồ Bàn Trực Quan (Real-time Table Map)</h3>
+          </div>
+          <div id="dining-tables-grid" class="tables-map-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 16px;">
+            <!-- Render JS -->
+          </div>
+        </div>
+
+        <!-- Bảng Danh Sách Đặt Bàn -->
+        <div class="content-box" style="padding: 20px;">
+          <div class="box-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
+            <h3>Danh Sách Phiếu Đặt Bàn (Reservations Ledger)</h3>
+            <div style="display:flex; gap:8px;">
+              <select id="filter-res-status" class="form-control" style="max-width: 170px; padding: 4px 8px;" onchange="loadAdminReservations()">
+                <option value="">Tất cả trạng thái</option>
+                <option value="PENDING">Chờ xác nhận</option>
+                <option value="CONFIRMED">Đã xác nhận</option>
+                <option value="CHECKED_IN">Đã nhận bàn</option>
+                <option value="COMPLETED">Hoàn tất</option>
+                <option value="CANCELLED">Đã hủy</option>
+              </select>
+            </div>
+          </div>
+          <div style="overflow-x: auto;">
+            <table class="data-table" id="reservations-table">
+              <thead>
+                <tr>
+                  <th>Mã Phiếu</th>
+                  <th>Khách Hàng</th>
+                  <th>Số ĐT</th>
+                  <th>Số Khách</th>
+                  <th>Khu Vực / Bàn</th>
+                  <th>Ngày &amp; Giờ Hẹn</th>
+                  <th>Ghi Chú</th>
+                  <th>Trạng Thái</th>
+                  <th>Thao Tác</th>
+                </tr>
+              </thead>
+              <tbody id="reservations-tbody">
+                <!-- Render JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== DASHBOARD ===== -->
+      <div id="admin-tab-dashboard" class="admin-panel">
+        <div class="panel-header">
+          <h2>Bảng Điều Khiển Tổng Quan (Dashboard)</h2>
+          <span class="date-indicator" id="current-date-str"></span>
+        </div>
+        <div class="kpi-grid" id="kpi-container">
+          <!-- JS Render -->
+        </div>
+        <div class="dashboard-grid-2">
+          <div class="content-box">
+            <div class="box-header"><h3>Doanh Thu 7 Ngày Gần Nhất</h3></div>
+            <div id="revenue-chart-area" style="padding: 10px 0;">
+              <table class="data-table" id="revenue-table">
+                <thead><tr><th>Ngày</th><th>Số đơn</th><th>Doanh thu</th></tr></thead>
+                <tbody id="revenue-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="content-box">
+            <div class="box-header"><h3>Phân Bố Hạng Thành Viên</h3></div>
+            <div id="dashboard-tier-dist"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== QUẢN LÝ KHÁCH HÀNG ===== -->
+      <div id="admin-tab-customers" class="admin-panel">
+        <div class="panel-header">
+          <h2>Quản Lý Hồ Sơ Khách Hàng Thân Thiết</h2>
+        </div>
+        <div class="filter-bar">
+          <input type="text" id="cust-filter-search" class="form-control" placeholder="Tìm theo tên, SĐT, mã KH..." oninput="loadCustomers()">
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Mã KH</th>
+                <th>Họ và Tên</th>
+                <th>Số Điện Thoại</th>
+                <th>Hạng Hiện Tại</th>
+                <th>Điểm Khả Dụng</th>
+                <th>Tổng Điểm Trọn Đời</th>
+                <th>Trạng Thái (Bật / Tắt)</th>
+                <th>Thao Tác</th>
+              </tr>
+            </thead>
+            <tbody id="admin-customers-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== DANH SÁCH ĐƠN HÀNG ===== -->
+      <div id="admin-tab-orders" class="admin-panel">
+        <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center;">
+          <h2>Quản Lý Đơn Hàng &amp; Hóa Đơn</h2>
+          <button class="btn btn-sm btn-outline" onclick="exportOrdersToExcel()" style="display: inline-flex; align-items: center; gap: 6px;">
+            <span>📥</span> Xuất Excel Đơn Hàng
+          </button>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Mã Đơn</th>
+                <th>Khách Hàng</th>
+                <th>Hạng</th>
+                <th>Thời Gian</th>
+                <th>Tạm Tính</th>
+                <th>Voucher</th>
+                <th>Giảm Giá</th>
+                <th>Thành Tiền</th>
+                <th>Điểm Tích</th>
+                <th>Kênh</th>
+                <th>Trạng Thái</th>
+              </tr>
+            </thead>
+            <tbody id="admin-orders-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== SẢN PHẨM & DANH MỤC ===== -->
+      <div id="admin-tab-products" class="admin-panel">
+        <div class="panel-header">
+          <h2>Quản Lý Sản Phẩm &amp; Danh Mục</h2>
+        </div>
+
+        <!-- Bảng 1: Quản lý Danh mục (Bật / Tắt toàn danh mục) -->
+        <div class="content-box" style="margin-bottom: 18px;">
+          <h3 style="margin-bottom: 10px; font-size: 1rem;">📂 Danh Mục Đồ Uống &amp; Bánh Ngọt (Bật / Tắt Danh Mục)</h3>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr><th>Mã DM</th><th>Tên Danh Mục</th><th>Số Món Đang Mở Bán</th><th>Trạng Thái Danh Mục (Bật / Tắt)</th></tr>
+              </thead>
+              <tbody id="admin-categories-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Bảng 2: Quản lý từng Sản phẩm (Bật / Tắt từng món) -->
+        <div class="content-box">
+          <h3 style="margin-bottom: 10px; font-size: 1rem;">☕ Danh Sách Chi Tiết Sản Phẩm (Bật / Tắt Món)</h3>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr><th>Mã</th><th>Hình ảnh</th><th>Tên Sản Phẩm</th><th>Danh mục</th><th>Đơn Giá</th><th>Trạng thái (Bật / Tắt)</th></tr>
+              </thead>
+              <tbody id="admin-products-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== HẠNG THÀNH VIÊN ===== -->
+      <div id="admin-tab-tiers" class="admin-panel">
+        <div class="panel-header"><h2>Cấu Hình 4 Hạng Thành Viên</h2></div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr><th>ID</th><th>Tên Hạng</th><th>Điểm Tối Thiểu</th><th>% Giảm Giá</th><th>Hệ Số Nhân Điểm</th></tr>
+            </thead>
+            <tbody id="admin-tiers-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== ƯU ĐÃI ĐỔI ĐIỂM ===== -->
+      <div id="admin-tab-rewards" class="admin-panel">
+        <div class="panel-header"><h2>Quản Lý Ưu Đãi Đổi Điểm</h2></div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr><th>ID</th><th>Tên Ưu Đãi</th><th>Loại Ưu Đãi</th><th>Điểm Cần Đổi</th><th>Giá Trị</th><th>Kho Còn</th><th>Trạng thái (Bật / Tắt)</th></tr>
+            </thead>
+            <tbody id="admin-rewards-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== KHUYẾN MÃI ===== -->
+      <div id="admin-tab-promos" class="admin-panel">
+        <div class="panel-header"><h2>Quản Lý Chương Trình Khuyến Mãi</h2></div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr><th>Mã Code</th><th>Tên Chương Trình</th><th>Loại KM</th><th>Giá Trị</th><th>Đơn Tối Thiểu</th><th>Thời Gian Hiệu Lực</th><th>Đã Dùng / Giới Hạn</th><th>Trạng thái (Bật / Tắt)</th></tr>
+            </thead>
+            <tbody id="admin-promos-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== BÁO CÁO THỐNG KÊ ===== -->
+      <div id="admin-tab-reports" class="admin-panel">
+        <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center;">
+          <h2>Báo Cáo Thống Kê Doanh Thu &amp; Điểm Thưởng</h2>
+          <button class="btn btn-sm btn-outline" onclick="exportRevenueToExcel()" style="display: inline-flex; align-items: center; gap: 6px;">
+            <span>📥</span> Xuất Báo Cáo Excel
+          </button>
+        </div>
+        
+        <!-- 4 Thẻ KPI Loyalty -->
+        <div class="kpi-grid" id="reports-kpi-container" style="margin-bottom: 24px;">
+          <!-- JS Render -->
+        </div>
+
+        <!-- Bảng Kê Doanh Thu Theo Ngày -->
+        <div class="content-box" style="margin-bottom: 24px;">
+          <div class="box-header"><h3>📅 Bảng Kê Doanh Thu &amp; Điểm Theo Ngày</h3></div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Ngày</th>
+                  <th>Số Đơn Hàng</th>
+                  <th>Doanh Thu Thực Thu</th>
+                  <th>Điểm Tích Cho Khách</th>
+                </tr>
+              </thead>
+              <tbody id="report-daily-revenue-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="dashboard-grid-2">
+          <div class="content-box">
+            <h3>Top 5 Khách Hàng Chi Tiêu Cao Nhất</h3>
+            <table class="data-table mt-3">
+              <thead><tr><th>Khách hàng</th><th>Hạng</th><th>Điểm tích</th><th>Tổng chi tiêu</th></tr></thead>
+              <tbody id="report-top-customers"></tbody>
+            </table>
+          </div>
+          <div class="content-box">
+            <h3>Top 5 Sản Phẩm Bán Chạy Nhất</h3>
+            <table class="data-table mt-3">
+              <thead><tr><th>Sản phẩm</th><th>Danh mục</th><th>SL bán</th><th>Doanh số</th></tr></thead>
+              <tbody id="report-top-products"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== TÀI KHOẢN NHÂN VIÊN ===== -->
+      <div id="admin-tab-users" class="admin-panel">
+        <div class="panel-header"><h2>Tài Khoản Quản Trị &amp; Thu Ngân</h2></div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead><tr><th>ID</th><th>Tên đăng nhập</th><th>Họ và tên</th><th>Vai trò</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+            <tbody id="admin-users-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== QUẢN LÝ NHÂN SỰ & BẢNG LƯƠNG CHUẨN BLLĐ 2019 ===== -->
+      <div id="admin-tab-staff" class="admin-panel">
+        <div class="panel-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <h2>Quản Lý Nhân Sự &amp; Bảng Lương Ca Làm</h2>
+            <p class="text-muted" style="margin: 4px 0 0 0; font-size: 0.88rem;">
+              Tuân thủ <strong>Bộ luật Lao động 2019</strong> &amp; <strong>Nghị định 74/2024/NĐ-CP</strong> (Lương tối thiểu giờ Vùng I: <strong>23.800 đ/giờ</strong>)
+            </p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-outline" onclick="openCheckinModal()">⏱️ Chấm công ca làm</button>
+            <button class="btn btn-primary" onclick="openAddStaffModal()">+ Thêm nhân sự mới</button>
+          </div>
+        </div>
+
+        <!-- 4 KPI Thống kê nhân sự & Tuân thủ luật -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 20px;">
+          <div class="stat-card" style="background: #fff; padding: 16px; border: 1px solid #E5E7EB;">
+            <div class="stat-label" style="font-size: 0.82rem; color: #6B7280;">👥 TỔNG NHÂN SỰ</div>
+            <div class="stat-val" id="stat-total-staff" style="font-size: 1.6rem; font-weight: 800; color: #3E2723;">5</div>
+            <div style="font-size: 0.78rem; color: #059669; margin-top: 4px;">● 100% Đang hoạt động</div>
+          </div>
+          <div class="stat-card" style="background: #fff; padding: 16px; border: 1px solid #E5E7EB;">
+            <div class="stat-label" style="font-size: 0.82rem; color: #6B7280;">⚖️ LƯƠNG TỐI THIỂU GIỜ</div>
+            <div class="stat-val" style="font-size: 1.6rem; font-weight: 800; color: #059669;">23.800 đ/h</div>
+            <div style="font-size: 0.78rem; color: #4B5563; margin-top: 4px;">Chuẩn Vùng I (NĐ 74/2024)</div>
+          </div>
+          <div class="stat-card" style="background: #fff; padding: 16px; border: 1px solid #E5E7EB;">
+            <div class="stat-label" style="font-size: 0.82rem; color: #6B7280;">⏱️ TỔNG GIỜ CÔNG THÁNG</div>
+            <div class="stat-val" id="stat-total-hours" style="font-size: 1.6rem; font-weight: 800; color: #2563EB;">30.5h</div>
+            <div style="font-size: 0.78rem; color: #4B5563; margin-top: 4px;">Tháng hiện tại (2026-11)</div>
+          </div>
+          <div class="stat-card" style="background: #fff; padding: 16px; border: 1px solid #E5E7EB;">
+            <div class="stat-label" style="font-size: 0.82rem; color: #6B7280;">💵 DỰ TOÁN QUỸ LƯƠNG</div>
+            <div class="stat-val" id="stat-total-payroll" style="font-size: 1.6rem; font-weight: 800; color: #E8618C;">1.043.238 đ</div>
+            <div style="font-size: 0.78rem; color: #4B5563; margin-top: 4px;">Đã gồm phụ cấp ca đêm &amp; BHXH</div>
+          </div>
+        </div>
+
+        <!-- Sub Tabs: 1. Hồ sơ nhân viên, 2. Bảng Chấm công, 3. Bảng Lương -->
+        <div style="display: flex; gap: 8px; border-bottom: 2px solid #E5E7EB; margin-bottom: 16px;">
+          <button class="pill active" id="staff-subtab-btn-list" onclick="switchStaffSubTab('list')">👥 Hồ sơ nhân sự &amp; Hợp đồng</button>
+          <button class="pill" id="staff-subtab-btn-timesheet" onclick="switchStaffSubTab('timesheet')">⏱️ Bảng chấm công ca làm</button>
+          <button class="pill" id="staff-subtab-btn-payroll" onclick="switchStaffSubTab('payroll')">💰 Bảng lương tháng &amp; Pháp lý</button>
+        </div>
+
+        <!-- SUBTAB 1: HỒ SƠ NHÂN SỰ -->
+        <div id="staff-subtab-list">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 12px; flex-wrap: wrap;">
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <select id="filter-staff-position" class="form-control" style="width: 170px;" onchange="loadStaffList()">
+                <option value="ALL">Tất cả vị trí</option>
+                <option value="SERVER">Phục vụ bàn</option>
+                <option value="BARISTA">Pha chế (Barista)</option>
+                <option value="CASHIER">Thu ngân</option>
+                <option value="MANAGER">Cửa hàng trưởng</option>
+              </select>
+              <select id="filter-staff-status" class="form-control" style="width: 150px;" onchange="loadStaffList()">
+                <option value="ALL">Tất cả trạng thái</option>
+                <option value="ACTIVE">Đang làm việc</option>
+                <option value="ON_LEAVE">Nghỉ phép</option>
+                <option value="RESIGNED">Đã nghỉ việc</option>
+              </select>
+            </div>
+            <span class="text-muted small">Quy chế: Trả lương đúng hạn, bảo đảm quyền lợi người lao động</span>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Mã NV</th>
+                  <th>Họ và tên</th>
+                  <th>SĐT &amp; CCCD</th>
+                  <th>Vị trí</th>
+                  <th>Hình thức</th>
+                  <th>Lương giờ</th>
+                  <th>Hợp đồng &amp; Chế độ</th>
+                  <th>Trạng thái</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="staff-list-tbody">
+                <!-- JS Render -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SUBTAB 2: CHẤM CÔNG CA LÀM (CA SÁNG & CA TỐI) -->
+        <div id="staff-subtab-timesheet" class="hidden">
+          <div style="background: #FFF7ED; border: 1px solid #FFEDD5; padding: 12px 16px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border-radius: 4px;">
+            <div style="font-size: 0.88rem; color: #9A3412;">
+              ☕ <strong>Phân bổ ca chuẩn F&B caPHEnue:</strong>
+              <span style="display: inline-block; margin-left: 8px; background: #FEF3C7; color: #B45309; padding: 2px 8px; font-weight: 700; border-radius: 4px;">🌅 Ca Sáng (07:00 - 12:30): 4 NV</span>
+              <span style="display: inline-block; margin-left: 6px; background: #EDE9FE; color: #6D28D9; padding: 2px 8px; font-weight: 700; border-radius: 4px;">🌙 Ca Tối (17:30 - 23:30): 5 NV (Có giờ đêm +30%)</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="openCheckinModal()">+ Chấm công vào ca mới</button>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <label class="small-label" style="margin: 0;">Ngày:</label>
+              <input type="date" id="filter-timesheet-date" class="form-control" style="width: 155px;" onchange="loadStaffTimesheets()">
+              <button class="btn btn-sm btn-outline" onclick="setTimesheetToday()">Hôm nay</button>
+
+              <label class="small-label" style="margin: 0 0 0 8px;">Lọc ca:</label>
+              <select id="filter-timesheet-shift" class="form-control" style="width: 160px;" onchange="loadStaffTimesheets()">
+                <option value="ALL">Tất cả các ca</option>
+                <option value="MORNING">🌅 Ca Sáng (07:00 - 12:30)</option>
+                <option value="NIGHT">🌙 Ca Tối (17:30 - 23:30)</option>
+              </select>
+
+              <label class="small-label" style="margin: 0 0 0 8px;">Trạng thái:</label>
+              <select id="filter-timesheet-status" class="form-control" style="width: 150px;" onchange="loadStaffTimesheets()">
+                <option value="ALL">Tất cả trạng thái</option>
+                <option value="WORKING">Đang trong ca</option>
+                <option value="COMPLETED">Đã hoàn thành</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Mã ca</th>
+                  <th>Nhân viên</th>
+                  <th>Vị trí</th>
+                  <th>Loại ca</th>
+                  <th>Giờ vào</th>
+                  <th>Giờ ra</th>
+                  <th>Tổng giờ</th>
+                  <th>Ca đêm (+30%)</th>
+                  <th>Trạng thái</th>
+                  <th>Ghi chú</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="staff-timesheet-tbody">
+                <!-- JS Render -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SUBTAB 3: BẢNG LƯƠNG THÁNG -->
+        <div id="staff-subtab-payroll" class="hidden">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <label class="small-label" style="margin: 0;">Kỳ tính lương:</label>
+              <input type="month" id="payroll-month-input" class="form-control" style="width: 150px;">
+              <button class="btn btn-sm btn-outline" onclick="loadStaffPayrolls()">Xem bảng lương</button>
+            </div>
+            <button class="btn btn-primary" onclick="calculateAutoPayroll()">⚡ Tính Lương Tự Động (BLLĐ 2019)</button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Mã NV</th>
+                  <th>Họ tên</th>
+                  <th>Vị trí &amp; HĐ</th>
+                  <th>Tổng giờ</th>
+                  <th>Lương/giờ</th>
+                  <th>Lương cơ bản</th>
+                  <th>Ca đêm (+30%)</th>
+                  <th>PC BHXH (Part-time)</th>
+                  <th>Thực nhận</th>
+                  <th>Trạng thái</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="staff-payroll-tbody">
+                <!-- JS Render -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== MODAL HÓA ĐƠN IN ===== -->
+  <div id="receipt-modal" class="modal-overlay hidden">
+    <div class="modal-box receipt-box">
+      <div class="receipt-print-area" id="receipt-content"></div>
+      <div class="receipt-actions">
+        <button class="btn btn-primary" onclick="window.print()">In Hóa Đơn</button>
+        <button class="btn btn-outline" onclick="closeReceiptModal()">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL CỘNG/TRỪ ĐIỂM KHÁCH HÀNG ===== -->
+  <div id="adjust-points-modal" class="modal-overlay hidden">
+    <div class="modal-box" style="max-width: 420px; border-radius: 0px;">
+      <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #E5E7EB; padding-bottom: 12px; margin-bottom: 16px;">
+        <h3 style="margin: 0; font-size: 1.15rem; color: #3E2723;">⚖️ Cộng / Trừ Điểm Khách Hàng</h3>
+        <button type="button" class="btn btn-text" onclick="closeAdjustPointsModal()" style="font-size: 1.5rem; line-height: 1; padding: 0;">&times;</button>
+      </div>
+      <form id="adjust-points-form" onsubmit="submitAdjustPoints(event)">
+        <input type="hidden" id="adjust-cust-id">
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="small-label">Khách hàng</label>
+          <input type="text" id="adjust-cust-name" class="form-control" readonly style="background: #f3f4f6;">
+        </div>
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="small-label">Điểm hiện tại</label>
+          <input type="text" id="adjust-cust-current" class="form-control" readonly style="background: #f3f4f6; font-weight: bold; color: #D84A77;">
+        </div>
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="small-label">Số điểm thay đổi (+ cộng, - trừ)</label>
+          <input type="number" id="adjust-points-amount" class="form-control" placeholder="VD: 50 hoặc -20" required>
+          <small class="text-muted" style="display: block; margin-top: 4px;">Nhập số dương để cộng điểm, số âm để trừ điểm</small>
+        </div>
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label class="small-label">Lý do điều chỉnh</label>
+          <input type="text" id="adjust-points-reason" class="form-control" placeholder="VD: Bù điểm sự kiện, sửa lỗi hóa đơn..." required>
+        </div>
+        <div id="adjust-points-error" class="text-danger small" style="margin-bottom: 12px; display: none;"></div>
+        <div class="modal-actions" style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button type="button" class="btn btn-outline" onclick="closeAdjustPointsModal()">Hủy</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-adjust-points">Xác nhận điều chỉnh</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== MODAL ĐỔI MẬT KHẨU TÀI KHOẢN ===== -->
+  <div id="change-password-modal" class="modal-overlay hidden">
+    <div class="modal-box" style="max-width: 400px; border-radius: 0px;">
+      <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #E5E7EB; padding-bottom: 12px; margin-bottom: 16px;">
+        <h3 style="margin: 0; font-size: 1.15rem; color: #3E2723;">🔑 Đổi Mật Khẩu Tài Khoản</h3>
+        <button type="button" class="btn btn-text" onclick="closeChangePasswordModal()" style="font-size: 1.5rem; line-height: 1; padding: 0;">&times;</button>
+      </div>
+      <form id="change-password-form" onsubmit="submitChangePassword(event)">
+        <input type="hidden" id="change-pass-user-id">
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="small-label">Tài khoản</label>
+          <input type="text" id="change-pass-username" class="form-control" readonly style="background: #f3f4f6;">
+        </div>
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label class="small-label">Mật khẩu mới (tối thiểu 6 ký tự)</label>
+          <input type="password" id="change-pass-new" class="form-control" placeholder="Nhập mật khẩu mới..." minlength="6" required>
+        </div>
+        <div id="change-pass-error" class="text-danger small" style="margin-bottom: 12px; display: none;"></div>
+        <div class="modal-actions" style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button type="button" class="btn btn-outline" onclick="closeChangePasswordModal()">Hủy</button>
+          <button type="submit" class="btn btn-primary">Lưu mật khẩu mới</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== MODAL THÊM / SỬA NHÂN VIÊN CHUẨN BLLĐ ===== -->
+  <div id="staff-modal" class="modal-overlay hidden">
+    <div class="modal-box" style="max-width: 540px; border-radius: 0px;">
+      <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #E5E7EB; padding-bottom: 12px; margin-bottom: 16px;">
+        <h3 id="staff-modal-title" style="margin: 0; font-size: 1.15rem; color: #3E2723;">👔 Thêm Hồ Sơ Nhân Viên Mới</h3>
+        <button type="button" class="btn btn-text" onclick="closeStaffModal()" style="font-size: 1.5rem; line-height: 1; padding: 0;">&times;</button>
+      </div>
+      <form id="staff-form" onsubmit="submitStaffForm(event)">
+        <input type="hidden" id="staff-form-id">
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px; margin-bottom: 12px;">
+          <div>
+            <label class="small-label">Mã NV (*)</label>
+            <input type="text" id="staff-form-code" class="form-control" placeholder="NV006" required>
+          </div>
+          <div>
+            <label class="small-label">Họ và tên (*)</label>
+            <input type="text" id="staff-form-name" class="form-control" placeholder="Nguyễn Văn A" required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+          <div>
+            <label class="small-label">Số điện thoại (*)</label>
+            <input type="tel" id="staff-form-phone" class="form-control" placeholder="0901234567" required>
+          </div>
+          <div>
+            <label class="small-label">Số CCCD (*)</label>
+            <input type="text" id="staff-form-cccd" class="form-control" placeholder="12 số CCCD gắn chip" required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+          <div>
+            <label class="small-label">Vị trí công việc</label>
+            <select id="staff-form-position" class="form-control">
+              <option value="SERVER">Phục vụ bàn (Server)</option>
+              <option value="BARISTA">Pha chế (Barista)</option>
+              <option value="CASHIER">Thu ngân (Cashier)</option>
+              <option value="SHIFT_LEADER">Trưởng ca (Shift Leader)</option>
+              <option value="MANAGER">Cửa hàng trưởng (Manager)</option>
+            </select>
+          </div>
+          <div>
+            <label class="small-label">Hình thức làm việc</label>
+            <select id="staff-form-type" class="form-control">
+              <option value="PART_TIME">Bán thời gian (Part-time)</option>
+              <option value="FULL_TIME">Toàn thời gian (Full-time)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 12px; background: #FFFBEB; border: 1px solid #FCD34D; padding: 10px; border-radius: 4px;">
+          <label class="small-label" style="color: #92400E; font-weight: 700;">⚖️ Mức lương giờ thỏa thuận (VNĐ/giờ) (*)</label>
+          <input type="number" id="staff-form-rate" class="form-control" min="23800" step="500" value="25000" required style="font-weight: bold; color: #059669;">
+          <small style="color: #B45309; display: block; margin-top: 4px; font-size: 0.78rem;">
+            ⚠️ Tuân thủ <strong>Nghị định 74/2024/NĐ-CP</strong>: Vùng I mức tối thiểu là <strong>23.800 đ/giờ</strong>. Hệ thống tự động từ chối nếu nhập thấp hơn mức luật định.
+          </small>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+          <div>
+            <label class="small-label">Số tài khoản ngân hàng</label>
+            <input type="text" id="staff-form-bank-acc" class="form-control" placeholder="1029384756">
+          </div>
+          <div>
+            <label class="small-label">Ngân hàng thụ hưởng</label>
+            <input type="text" id="staff-form-bank-name" class="form-control" placeholder="MB Bank, Vietcombank...">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+          <div>
+            <label class="small-label">Ngày bắt đầu làm việc</label>
+            <input type="date" id="staff-form-start-date" class="form-control">
+          </div>
+          <div>
+            <label class="small-label">Thời hạn HĐLĐ &amp; Ghi chú</label>
+            <input type="text" id="staff-form-contract" class="form-control" placeholder="Part-time 6 tháng (Kèm PC BHXH 21.5%)">
+          </div>
+        </div>
+
+        <div id="staff-form-error" class="text-danger small" style="margin-bottom: 12px; display: none;"></div>
+
+        <div class="modal-actions" style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button type="button" class="btn btn-outline" onclick="closeStaffModal()">Hủy</button>
+          <button type="submit" class="btn btn-primary" id="staff-form-submit-btn">Lưu Hồ Sơ Nhân Viên</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== MODAL CHẤM CÔNG VÀO CA (CHECK-IN) ===== -->
+  <div id="checkin-modal" class="modal-overlay hidden">
+    <div class="modal-box" style="max-width: 420px; border-radius: 0px;">
+      <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #E5E7EB; padding-bottom: 12px; margin-bottom: 16px;">
+        <h3 style="margin: 0; font-size: 1.15rem; color: #3E2723;">⏱️ Chấm Công Vào Ca Làm Việc</h3>
+        <button type="button" class="btn btn-text" onclick="closeCheckinModal()" style="font-size: 1.5rem; line-height: 1; padding: 0;">&times;</button>
+      </div>
+      <form id="checkin-form" onsubmit="submitCheckinForm(event)">
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="small-label">Chọn nhân viên vào ca (*)</label>
+          <select id="checkin-staff-select" class="form-control" required>
+            <!-- JS Populate -->
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="small-label">Loại ca làm việc</label>
+          <select id="checkin-shift-type" class="form-control">
+            <option value="MORNING">Ca Sáng (07:00 - 12:00)</option>
+            <option value="AFTERNOON">Ca Chiều (12:00 - 17:30)</option>
+            <option value="NIGHT">Ca Tối (17:30 - 23:00 - Sau 22h hưởng +30%)</option>
+            <option value="CUSTOM">Ca Linh hoạt / Tăng cường</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label class="small-label">Ghi chú phân công ca</label>
+          <input type="text" id="checkin-note" class="form-control" placeholder="Trực bàn tầng 1, pha chế chính...">
+        </div>
+        <div class="modal-actions" style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button type="button" class="btn btn-outline" onclick="closeCheckinModal()">Hủy</button>
+          <button type="submit" class="btn btn-primary">Xác Nhận Vào Ca</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="api.js" defer></script>
+  <script src="admin.js" defer></script>
+</body>
+</html>

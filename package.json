@@ -1,0 +1,21 @@
+{
+  "name": "caphenue-website",
+  "version": "1.0.0",
+  "description": "caPHEnue - Tiệm Cà Phê Hoa Đào Loyalty Platform",
+  "main": "backend/server.js",
+  "scripts": {
+    "dev": "node backend/server.js",
+    "start": "node backend/server.js",
+    "backend": "cd backend && npm run start:dev",
+    "serve": "node backend/server.js"
+  },
+  "keywords": [
+    "caphenue",
+    "coffee",
+    "loyalty",
+    "pos"
+  ],
+  "author": "caPHEnue Team",
+  "license": "ISC"
+}
+

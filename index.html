@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>caPHEnue - Quản Lý Khách Hàng Thân Thiết Quán Cà Phê</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ==================== HEADER CHÍNH (WEBSITE NGOÀI) ==================== -->
+  <header class="main-header">
+    <div class="header-container">
+      <div class="brand" onclick="switchView('home')">
+        <img src="images/logo_hoa_dao.png" alt="caPHEnue Logo" class="brand-logo">
+        <div class="brand-text">
+          <span class="brand-name">caPHEnue</span>
+          <span class="brand-tagline">Tiệm Cà Phê Hoa Đào • Loyalty Club</span>
+        </div>
+      </div>
+
+      <nav class="main-nav">
+        <a href="javascript:void(0)" class="nav-link active" id="nav-home" onclick="switchView('home')">Trang chủ</a>
+        <a href="javascript:void(0)" class="nav-link highlight-order" id="nav-order" onclick="switchView('order')">☕ Đặt Món &amp; Tích Điểm</a>
+        <a href="javascript:void(0)" class="nav-link" id="nav-booking" onclick="switchView('booking')">🪑 Đặt Bàn</a>
+        <a href="javascript:void(0)" class="nav-link" id="nav-promos" onclick="switchView('promos')">Khuyến mãi</a>
+        <a href="javascript:void(0)" class="nav-link" id="nav-rewards" onclick="switchView('rewards')">🎁 Đổi ưu đãi</a>
+        <a href="javascript:void(0)" class="nav-link" id="nav-tiers" onclick="switchView('tiers')">Hạng thành viên</a>
+        <a href="javascript:void(0)" class="nav-link" id="nav-lookup" onclick="switchView('lookup')">🔍 Tra cứu điểm</a>
+      </nav>
+
+      <div class="header-actions">
+        <!-- Chỉ 1 nút Đăng Nhập duy nhất ở Header (hoặc Avatar tròn sau khi đăng nhập) -->
+        <div id="client-auth-status" style="display: flex; gap: 6px; align-items: center;">
+          <button class="btn btn-primary btn-sm" onclick="openClientAuthModal('client-login')">
+            🌸 Đăng Nhập
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== PHÂN HỆ KHÁCH HÀNG (WEBSITE NGOÀI) ==================== -->
+  <main id="client-view" class="view-section">
+
+    <!-- P1: TRANG CHỦ -->
+    <section id="section-home" class="page-content active">
+      <!-- Hero Banner -->
+      <div class="hero-banner">
+        <div class="hero-badge">🌸 Chương trình Tri ân Khách Hàng Thân Thiết 2026</div>
+        <h1 class="hero-title">Thưởng Vị Cà Phê Mộc,<br><span class="text-pink">Tích Lũy Điểm Hoa Đào</span></h1>
+        <p class="hero-subtitle">Mỗi 10.000đ chi tiêu nhận ngay điểm tích lũy, tự động nâng hạng Bạc, Vàng, Kim Cương và đổi hàng trăm voucher ưu đãi trực tuyến tại <strong>caPHEnue</strong>.</p>
+        <div class="hero-buttons">
+          <button class="btn btn-primary" onclick="switchView('order')">☕ Đặt Món & Tích Điểm Ngay</button>
+          <button class="btn btn-secondary" onclick="switchView('rewards')">🎁 Đổi Ưu Đãi Hội Viên</button>
+          <button class="btn btn-outline" onclick="switchView('lookup')">🔍 Tra cứu điểm</button>
+        </div>
+      </div>
+
+      <!-- 3 Bước tham gia -->
+      <div class="steps-container">
+        <div class="step-card">
+          <div class="step-number">01</div>
+          <div class="step-icon">☕</div>
+          <h3>Đặt món tại quầy hoặc Online</h3>
+          <p>Nhập số điện thoại khi đặt hàng trên web hoặc đọc SĐT tại quầy để được nhận diện hội viên.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">02</div>
+          <div class="step-icon">✨</div>
+          <h3>Tự động tích điểm & Nâng hạng</h3>
+          <p>Tích điểm tự động theo quy tắc BR1, nâng hạng Bạc, Vàng, Kim Cương theo điểm trọn đời.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">03</div>
+          <div class="step-icon">🎁</div>
+          <h3>Đổi voucher trực tuyến</h3>
+          <p>Đăng nhập tài khoản trên web để tự đổi điểm nhận voucher giảm giá hoặc ly nước miễn phí.</p>
+        </div>
+      </div>
+
+      <!-- 4 Hạng thành viên tóm tắt -->
+      <div class="section-block">
+        <div class="block-header">
+          <div>
+            <span class="block-kicker">Đặc quyền hội viên</span>
+            <h2 class="block-title">4 Cấp Độ Hạng Thành Viên</h2>
+          </div>
+          <button class="btn btn-text" onclick="switchView('tiers')">Xem chi tiết quyền lợi →</button>
+        </div>
+        <div class="tier-cards-grid">
+          <div class="tier-card tier-dong">
+            <div class="tier-badge">Hạng Cơ Bản</div>
+            <h3>Hạng Đồng</h3>
+            <div class="tier-points">0 điểm tích lũy</div>
+            <ul class="tier-perks">
+              <li>✓ Tích điểm 1.0x (10.000đ = 1 điểm)</li>
+              <li>✓ Nhận tin khuyến mãi định kỳ</li>
+              <li>✓ Tích lũy trọn đời không hạ hạng</li>
+            </ul>
+          </div>
+          <div class="tier-card tier-bac">
+            <div class="tier-badge">Hạng Bạc</div>
+            <h3>Hạng Bạc</h3>
+            <div class="tier-points">Từ 200 điểm</div>
+            <ul class="tier-perks">
+              <li>✓ <strong>Giảm ngay 2%</strong> trên mọi hóa đơn</li>
+              <li>✓ Hệ số nhân điểm <strong>1.1x</strong></li>
+              <li>✓ Quà tặng ưu đãi dịp sinh nhật</li>
+            </ul>
+          </div>
+          <div class="tier-card tier-vang">
+            <div class="tier-badge">Hạng Vàng</div>
+            <h3>Hạng Vàng</h3>
+            <div class="tier-points">Từ 500 điểm</div>
+            <ul class="tier-perks">
+              <li>✓ <strong>Giảm ngay 5%</strong> trên mọi hóa đơn</li>
+              <li>✓ Hệ số nhân điểm <strong>1.2x</strong></li>
+              <li>✓ Ưu tiên phục vụ tại bàn</li>
+              <li>✓ Tặng 01 ly nước miễn phí dịp sinh nhật</li>
+            </ul>
+          </div>
+          <div class="tier-card tier-kimcuong">
+            <div class="tier-badge">VIP Premium</div>
+            <h3>Hạng Kim Cương</h3>
+            <div class="tier-points">Từ 1.000 điểm</div>
+            <ul class="tier-perks">
+              <li>✓ <strong>Giảm ngay 8%</strong> trên mọi hóa đơn</li>
+              <li>✓ Hệ số nhân điểm tối đa <strong>1.5x</strong></li>
+              <li>✓ Thử món mới miễn phí trước khi mở bán</li>
+              <li>✓ Quà tri ân đặc biệt cuối năm</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== THỰC ĐƠN NỔI BẬT (từ API) ===== -->
+      <div class="section-block" id="home-menu-section">
+        <div class="block-header">
+          <div>
+            <span class="block-kicker">Đặc sản caPHEnue</span>
+            <h2 class="block-title">Thực Đơn Nổi Bật</h2>
+          </div>
+          <button class="btn btn-text" onclick="switchView('order')">Đặt món ngay →</button>
+        </div>
+        <!-- Filter category tabs -->
+        <div class="home-menu-tabs" id="home-menu-tabs">
+          <button class="home-tab active" onclick="filterHomeMenu('ALL', this)">Tất cả</button>
+          <button class="home-tab" onclick="filterHomeMenu('Cà phê', this)">☕ Cà phê</button>
+          <button class="home-tab" onclick="filterHomeMenu('Trà hoa quả', this)">🍹 Trà hoa quả</button>
+          <button class="home-tab" onclick="filterHomeMenu('Bánh ngọt', this)">🥐 Bánh ngọt</button>
+        </div>
+        <div class="home-products-grid" id="home-products-grid">
+          <!-- JS Render từ API /api/products -->
+          <div class="loading-spinner">⏳ Đang tải sản phẩm...</div>
+        </div>
+      </div>
+
+      <!-- Khuyến mãi nổi bật -->
+      <div class="section-block">
+        <div class="block-header">
+          <div>
+            <span class="block-kicker">Đang diễn ra</span>
+            <h2 class="block-title">Chương Trình Khuyến Mãi Nổi Bật</h2>
+          </div>
+          <button class="btn btn-text" onclick="switchView('promos')">Xem tất cả →</button>
+        </div>
+        <div class="promo-grid" id="home-promo-list">
+          <!-- JS Render -->
+        </div>
+      </div>
+    </section>
+
+    <!-- P-ORDER: ĐẶT MÓN & TÍCH ĐIỂM TRÊN WEB NGOÀI (MỤC MỚI) -->
+    <section id="section-order" class="page-content">
+      <div class="page-banner">
+        <h2>☕ Đặt Món Trực Tuyến & Tích Điểm Hội Viên</h2>
+        <p>Chọn đồ uống yêu thích, áp dụng ưu đãi hội viên và tích điểm tự động ngay trên website</p>
+      </div>
+
+      <div class="online-order-workspace">
+        <!-- Cột trái: Menu chọn món -->
+        <div class="order-menu-col">
+          <div class="menu-filter-row">
+            <div class="pos-category-pills" id="order-cat-filter">
+              <button class="pill active" onclick="filterOnlineMenu('ALL')">Tất cả</button>
+              <button class="pill" onclick="filterOnlineMenu('Cà phê')">☕ Cà phê</button>
+              <button class="pill" onclick="filterOnlineMenu('Trà hoa quả')">🍹 Trà hoa quả</button>
+              <button class="pill" onclick="filterOnlineMenu('Bánh ngọt')">🥐 Bánh ngọt</button>
+            </div>
+            <input type="text" id="order-search-input" class="form-control" style="max-width: 200px;" placeholder="Tìm món..." oninput="searchOnlineMenu(this.value)">
+          </div>
+
+          <div class="online-products-grid" id="online-products-list">
+            <!-- JS Render Products with "+ Thêm" button -->
+          </div>
+        </div>
+
+        <!-- Cột phải: Giỏ hàng online & Tích điểm -->
+        <div class="order-cart-col">
+          <div class="cart-card">
+            <div class="cart-header">
+              <h3>Giỏ Hàng Của Bạn</h3>
+              <span class="badge badge-point" id="cart-item-count">0 món</span>
+            </div>
+
+            <!-- Nhận diện thành viên đặt hàng -->
+            <div class="customer-picker-box">
+              <label class="small-label">Thông tin người đặt & Tích điểm:</label>
+              <div id="online-customer-badge">
+                <div class="customer-search-row">
+                  <input type="tel" id="online-cust-phone" placeholder="Nhập SĐT để tích điểm..." value="0912345678" oninput="onlinePhoneChanged()">
+                  <button class="btn btn-sm btn-secondary" onclick="onlineLookupPhone()">Nhận diện</button>
+                </div>
+                <div class="customer-badge-info" id="online-cust-info">
+                  <div class="info-row">
+                    <span class="cust-name" id="online-cust-name">Trần Thanh Hải</span>
+                    <span class="badge badge-vang" id="online-cust-tier">Hạng Vàng (-5%)</span>
+                  </div>
+                  <div class="info-row small text-muted">
+                    <span>Điểm khả dụng: <strong class="text-pink" id="online-cust-points">540 pts</strong></span>
+                    <span>Hệ số điểm: <strong id="online-cust-multiplier">1.2x</strong></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Danh sách món trong giỏ -->
+            <div class="bill-items-list" id="online-cart-items">
+              <div class="text-center text-muted" style="padding: 24px;">Giỏ hàng trống. Chọn đồ uống bên trái để bắt đầu!</div>
+            </div>
+
+            <!-- Mã khuyến mãi & Voucher đổi điểm -->
+            <div class="bill-discounts-box">
+              <div class="promo-input-row">
+                <input type="text" id="online-promo-code" placeholder="Mã khuyến mãi (VD: HE2026)">
+                <button class="btn btn-sm btn-outline" onclick="onlineApplyPromo()">Áp dụng</button>
+              </div>
+              <div class="promo-input-row">
+                <input type="text" id="online-reward-code" placeholder="Mã voucher đổi điểm (VD: UD-7K3F9A)">
+                <button class="btn btn-sm btn-outline" onclick="onlineApplyReward()">Dùng mã</button>
+              </div>
+            </div>
+
+            <!-- Bảng tính tiền & Tích điểm chuẩn BR1-BR3 -->
+            <div class="bill-calculation">
+              <div class="calc-row">
+                <span>Tạm tính (Subtotal):</span>
+                <strong id="online-subtotal">0 đ</strong>
+              </div>
+              <div class="calc-row text-success">
+                <span>Giảm theo hạng (<span id="online-tier-pct">0%</span>):</span>
+                <span id="online-tier-discount">-0 đ</span>
+              </div>
+              <div class="calc-row text-primary">
+                <span>Khuyến mãi (<span id="online-promo-label">None</span>):</span>
+                <span id="online-promo-discount">-0 đ</span>
+              </div>
+              <div class="calc-row text-pink">
+                <span>Voucher đổi điểm:</span>
+                <span id="online-reward-discount">-0 đ</span>
+              </div>
+              <div class="calc-row total-row">
+                <span>TỔNG THANH TOÁN:</span>
+                <span class="total-price" id="online-final-total">0 đ</span>
+              </div>
+              <div class="calc-row points-earned-row">
+                <span>Điểm tích lũy nhận được (BR1):</span>
+                <span class="badge badge-point" id="online-points-earned">+0 pts</span>
+              </div>
+            </div>
+
+            <div class="bill-actions mt-3">
+              <button class="btn btn-outline" onclick="onlineClearCart()">Xóa giỏ</button>
+              <button class="btn btn-primary btn-lg" onclick="onlineCheckout()">ĐẶT HÀNG & TÍCH ĐIỂM</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== GIAO DIỆN ĐẶT BÀN TẠI QUÁN ==================== -->
+    <section id="section-booking" class="page-content">
+      <div class="page-banner" style="background: linear-gradient(135deg, #3E2723 0%, #4E342E 100%); color: #fff; padding: 36px 20px; text-align: center;">
+        <h2 style="font-family:'Playfair Display', serif; font-size:2rem; margin-bottom:8px;">🪑 Đặt Bàn Trực Tuyến Tại caPHEnue</h2>
+        <p style="color:#F5EBE6; font-size:1rem; max-width:650px; margin:0 auto;">
+          Không gian thưởng trà &amp; cà phê hoa đào thơ mộng. Chọn chỗ ngồi yêu thích, đặt trước để nhận bàn ngay khi đến và tích điểm hội viên!
+        </p>
+      </div>
+
+      <!-- Không gian các khu vực quán (Enterprise Visual Presentation) -->
+      <div class="container" style="max-width: 1050px; margin: 30px auto; padding: 0 16px;">
+        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px;">
+          <div class="feature-card" style="background:#fff; border:1px solid var(--border-color); padding:20px; text-align:center;">
+            <div style="font-size:2.2rem; margin-bottom:10px;">🌸</div>
+            <h4 style="color:#3E2723; margin-bottom:6px;">Tầng 1 - Máy Lạnh &amp; Hoa Đào</h4>
+            <p class="small text-muted">Không gian ấm cúng, view cửa sổ lãng mạn, âm nhạc acoustic du dương và hương cafe nồng nàn.</p>
+          </div>
+          <div class="feature-card" style="background:#fff; border:1px solid var(--border-color); padding:20px; text-align:center;">
+            <div style="font-size:2.2rem; margin-bottom:10px;">🌿</div>
+            <h4 style="color:#3E2723; margin-bottom:6px;">Tầng 2 - Ban Công &amp; Sân Vườn</h4>
+            <p class="small text-muted">Thoáng đãng lộng gió, ngắm trọn hoàng hôn và phố phường, không gian mở cho các buổi trò chuyện bạn bè.</p>
+          </div>
+          <div class="feature-card" style="background:#fff; border:1px solid var(--border-color); padding:20px; text-align:center;">
+            <div style="font-size:2.2rem; margin-bottom:10px;">⭐</div>
+            <h4 style="color:#3E2723; margin-bottom:6px;">Phòng VIP - Họp Nhóm &amp; Workshop</h4>
+            <p class="small text-muted">Riêng tư, yên tĩnh, trang bị máy chiếu, bảng vẽ và ổ cắm điện đầy đủ cho các buổi thảo luận, làm việc nhóm.</p>
+          </div>
+        </div>
+
+        <!-- Form Đặt Bàn Sang Trọng -->
+        <div style="background:#fff; border:1px solid var(--border-color); box-shadow:var(--shadow-md); padding:32px; max-width:750px; margin:0 auto;">
+          <h3 style="color:#3E2723; font-family:'Playfair Display', serif; text-align:center; margin-bottom:6px; font-size:1.5rem;">
+            Phiếu Đăng Ký Giữ Chỗ
+          </h3>
+          <p style="text-align:center; color:#6B7280; font-size:0.88rem; margin-bottom:24px;">
+            Vui lòng điền thông tin bên dưới, nhân viên lễ tân sẽ liên hệ xác nhận trong vòng 10 phút.
+          </p>
+
+          <form id="client-booking-form" onsubmit="handleClientBookingSubmit(event)">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:16px;">
+              <div class="form-group">
+                <label class="form-label" style="font-weight:700;">Họ và tên quý khách <span class="text-danger">*</span></label>
+                <input type="text" id="booking-cust-name" class="form-control" placeholder="Nguyễn Văn A" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" style="font-weight:700;">Số điện thoại liên hệ <span class="text-danger">*</span></label>
+                <input type="tel" id="booking-cust-phone" class="form-control" placeholder="0912345678" required>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:16px; margin-bottom:16px;">
+              <div class="form-group">
+                <label class="form-label" style="font-weight:700;">Số lượng khách <span class="text-danger">*</span></label>
+                <select id="booking-party-size" class="form-control" required>
+                  <option value="2">1 - 2 người (Bàn đôi)</option>
+                  <option value="4" selected>3 - 4 người (Bàn tiêu chuẩn)</option>
+                  <option value="6">5 - 6 người (Bàn gia đình)</option>
+                  <option value="8">7 - 8 người (Bàn dài/VIP)</option>
+                  <option value="12">Nhóm trên 8 người (Phòng VIP)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" style="font-weight:700;">Ngày đến <span class="text-danger">*</span></label>
+                <input type="date" id="booking-date" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" style="font-weight:700;">Khung giờ đến <span class="text-danger">*</span></label>
+                <select id="booking-time" class="form-control" required>
+                  <option value="08:00">08:00 sáng</option>
+                  <option value="09:00">09:00 sáng</option>
+                  <option value="10:00">10:00 sáng</option>
+                  <option value="11:30">11:30 trưa</option>
+                  <option value="14:00">14:00 chiều</option>
+                  <option value="15:30">15:30 chiều</option>
+                  <option value="17:00">17:00 chiều</option>
+                  <option value="18:30" selected>18:30 tối</option>
+                  <option value="19:30">19:30 tối</option>
+                  <option value="20:30">20:30 tối</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom:16px;">
+              <label class="form-label" style="font-weight:700;">Khu vực mong muốn <span class="text-danger">*</span></label>
+              <select id="booking-area" class="form-control" required>
+                <option value="INDOOR">🌸 Tầng 1 - Máy lạnh ấm cúng, view hoa đào</option>
+                <option value="OUTDOOR">🌿 Tầng 2 - Ban công sân vườn lộng gió</option>
+                <option value="VIP">⭐ Phòng VIP - Họp nhóm, workshop riêng tư</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom:20px;">
+              <label class="form-label" style="font-weight:700;">Yêu cầu đặc biệt (tùy chọn)</label>
+              <textarea id="booking-notes" class="form-control" rows="2" placeholder="VD: Cần bàn gần ổ cắm điện, setup hoa mừng sinh nhật, ly nước lọc sẵn..."></textarea>
+            </div>
+
+            <div style="text-align:center;">
+              <button type="submit" class="btn btn-primary btn-lg" style="padding:12px 36px; font-weight:700; letter-spacing:0.5px;">
+                🌸 XÁC NHẬN ĐẶT BÀN NGAY
+              </button>
+            </div>
+          </form>
+
+          <!-- Kết quả đặt bàn thành công -->
+          <div id="booking-success-box" style="display:none; text-align:center; padding:24px; background:#F0FDF4; border:1px solid #86EFAC; margin-top:20px;">
+            <div style="font-size:2.5rem; margin-bottom:8px;">🎉</div>
+            <h4 style="color:#166534; margin-bottom:6px;">Đặt Bàn Thành Công!</h4>
+            <p id="booking-success-msg" style="color:#15803D; font-size:0.95rem; line-height:1.6; margin-bottom:12px;"></p>
+            <p class="small text-muted">Lễ tân caPHEnue sẽ giữ bàn trong vòng 15 phút tính từ giờ hẹn. Cảm ơn quý khách!</p>
+            <button class="btn btn-sm btn-outline" style="margin-top:10px;" onclick="resetBookingForm()">Đặt thêm bàn khác</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- P2: KHUYẾN MÃI -->
+    <section id="section-promos" class="page-content">
+      <div class="page-banner">
+        <h2>Chương Trình Khuyến Mãi</h2>
+        <p>Áp dụng trực tiếp khi thanh toán tại quầy thu ngân hoặc đặt món trực tuyến trên website caPHEnue</p>
+      </div>
+      <div class="promo-grid" id="full-promo-list">
+        <!-- JS Render -->
+      </div>
+    </section>
+
+    <!-- P3: ƯU ĐÃI ĐỔI ĐIỂM (CÓ TÍNH NĂNG ĐỔI TRỰC TIẾP TRÊN WEB) -->
+    <section id="section-rewards" class="page-content">
+      <div class="page-banner">
+        <h2>🎁 Danh Mục Ưu Đãi Đổi Điểm Trực Tuyến</h2>
+        <p>Đăng nhập tài khoản hội viên để tự quy đổi điểm tích lũy lấy voucher giảm giá và ly nước miễn phí</p>
+      </div>
+
+      <!-- Banner trạng thái điểm của hội viên -->
+      <div class="client-rewards-user-banner" id="rewards-user-status-bar">
+        <!-- JS Render: Hiển thị số điểm khả dụng & nút Mở Kho Voucher -->
+      </div>
+
+      <!-- Kho Voucher của tôi -->
+      <div class="my-vouchers-container hidden" id="my-vouchers-box">
+        <div class="box-header">
+          <h3>🎟️ Kho Voucher Ưu Đãi Của Tôi</h3>
+          <button class="btn btn-sm btn-outline" onclick="toggleMyVouchersBox()">Đóng lại</button>
+        </div>
+        <div class="vouchers-grid" id="my-vouchers-list">
+          <!-- JS Render -->
+        </div>
+      </div>
+
+      <!-- Danh mục các phần quà có thể đổi -->
+      <div class="rewards-grid" id="client-rewards-list">
+        <!-- JS Render -->
+      </div>
+    </section>
+
+    <!-- P4: HẠNG THÀNH VIÊN -->
+    <section id="section-tiers" class="page-content">
+      <div class="page-banner">
+        <h2>Chính Sách & Hạng Thành Viên</h2>
+        <p>Quy tắc tích điểm BR1-BR8 minh bạch, xét hạng theo tổng điểm tích lũy trọn đời (lifetime_points)</p>
+      </div>
+      <div class="tier-table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Hạng thành viên</th>
+              <th>Điểm tích lũy tối thiểu</th>
+              <th>Giảm giá trực tiếp</th>
+              <th>Hệ số nhân điểm</th>
+              <th>Quyền lợi bổ sung</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge badge-dong">🥉 Hạng Đồng</span></td>
+              <td>0 điểm</td>
+              <td>0%</td>
+              <td>1.0x</td>
+              <td>Tích điểm cho mỗi lần mua từ 10.000đ</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-bac">🥈 Hạng Bạc</span></td>
+              <td>200 điểm</td>
+              <td><strong>2.0%</strong></td>
+              <td>1.1x</td>
+              <td>Giảm 2% hóa đơn, voucher sinh nhật</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-vang">🥇 Hạng Vàng</span></td>
+              <td>500 điểm</td>
+              <td><strong>5.0%</strong></td>
+              <td>1.2x</td>
+              <td>Giảm 5% hóa đơn, tặng đồ uống sinh nhật</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-kimcuong">💎 Hạng Kim Cương</span></td>
+              <td>1.000 điểm</td>
+              <td><strong>8.0%</strong></td>
+              <td>1.5x</td>
+              <td>Giảm 8% hóa đơn, nhân 1.5x điểm tích lũy, quà tri ân VIP</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="policy-card">
+        <h3>📌 Nguyên Tắc Tích & Giữ Hạng</h3>
+        <ul>
+          <li><strong>Không hạ hạng:</strong> Hạng thành viên được xét dựa trên tổng điểm trọn đời (lifetime points). Khi bạn dùng điểm để đổi quà, số dư điểm tiêu dùng giảm nhưng tổng điểm trọn đời vẫn giữ nguyên!</li>
+          <li><strong>Quy tắc làm tròn:</strong> Điểm mỗi đơn = floor(Thành tiền / 10.000) × Hệ số nhân điểm.</li>
+          <li><strong>Cập nhật tức thì:</strong> Hệ thống tự động nâng hạng ngay khi đơn hàng hoàn tất nếu đạt đủ điểm tích lũy.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- P5: TRA CỨU ĐIỂM -->
+    <section id="section-lookup" class="page-content">
+      <div class="lookup-box">
+        <div class="lookup-header">
+          <img src="images/logo_hoa_dao.png" alt="Logo" class="lookup-logo">
+          <h2>Tra Cứu Điểm & Hạng Hội Viên</h2>
+          <p>Nhập số điện thoại đã đăng ký để kiểm tra số dư điểm, hạng thành viên và các ưu đãi hiện có</p>
+        </div>
+
+        <div class="lookup-form">
+          <div class="input-group">
+            <span class="input-icon">📱</span>
+            <input type="tel" id="lookup-phone-input" placeholder="Nhập số điện thoại (VD: 0912345678)" value="0912345678">
+            <button class="btn btn-primary" onclick="handleCustomerLookup()">Kiểm tra ngay</button>
+          </div>
+          <div class="quick-demo-phones">
+            <span>SĐT mẫu thử:</span>
+            <a href="javascript:void(0)" onclick="quickLookup('0912345678')">0912345678 (Vàng)</a> •
+            <a href="javascript:void(0)" onclick="quickLookup('0987654321')">0987654321 (Bạc)</a> •
+            <a href="javascript:void(0)" onclick="quickLookup('0905111222')">0905111222 (Kim Cương)</a> •
+            <a href="javascript:void(0)" onclick="quickLookup('0933444555')">0933444555 (Đồng)</a>
+          </div>
+        </div>
+
+        <!-- Kết quả tra cứu -->
+        <div id="lookup-result" class="lookup-result hidden">
+          <!-- Card Hội Viên -->
+          <div class="membership-card-preview" id="member-card-ui">
+            <div class="card-top">
+              <div class="card-brand">
+                <img src="images/logo_hoa_dao.png" alt="logo" class="card-mini-logo">
+                <span>caPHEnue Club</span>
+              </div>
+              <div class="card-tier-pill" id="card-tier-name">Hạng Vàng</div>
+            </div>
+            <div class="card-body-content">
+              <div class="card-owner-name" id="card-owner-name">Trần T** H</div>
+              <div class="card-phone-mask" id="card-phone-mask">0912 ••• 678</div>
+            </div>
+            <div class="card-stats">
+              <div class="stat-col">
+                <span class="stat-label">Điểm khả dụng</span>
+                <span class="stat-value text-pink" id="card-points-balance">540</span>
+              </div>
+              <div class="stat-col">
+                <span class="stat-label">Tổng tích lũy</span>
+                <span class="stat-value" id="card-lifetime-points">760</span>
+              </div>
+              <div class="stat-col">
+                <span class="stat-label">Giảm giá tại quầy</span>
+                <span class="stat-value" id="card-discount-rate">5%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Thanh tiến trình lên hạng -->
+          <div class="progress-container">
+            <div class="progress-info">
+              <span id="next-tier-label">Tiến trình lên hạng Kim Cương</span>
+              <span id="points-needed-text">Còn cần 240 điểm nữa</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" id="tier-progress-fill" style="width: 76%;"></div>
+            </div>
+          </div>
+
+          <!-- Lịch sử giao dịch điểm -->
+          <div class="recent-history-box">
+            <h3>Lịch Sử Giao Dịch Điểm Gần Đây</h3>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Thời gian</th>
+                  <th>Loại giao dịch</th>
+                  <th>Điểm biến động</th>
+                  <th>Số dư sau</th>
+                  <th>Diễn giải</th>
+                </tr>
+              </thead>
+              <tbody id="member-history-table">
+                <!-- JS Render -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== CỔNG ĐĂNG NHẬP / ĐĂNG KÝ HỘI VIÊN (100% KHÁCH HÀNG) ==================== -->
+  <div id="client-auth-modal" class="modal-overlay hidden">
+    <div class="modal-box" style="max-width: 460px;">
+      <div class="modal-header">
+        <h3 id="client-auth-modal-title">🌸 caPHEnue Club • Hội Viên Thân Thiết</h3>
+        <button class="modal-close" onclick="closeClientAuthModal()">✕</button>
+      </div>
+
+      <!-- 2 TAB KHÁCH HÀNG: ĐĂNG NHẬP & ĐĂNG KÝ MỚI -->
+      <div class="portal-switch-tabs">
+        <button class="portal-tab-btn active" id="tab-btn-client-login" onclick="switchClientAuthTab('client-login')">
+          🌸 Đăng Nhập
+        </button>
+        <button class="portal-tab-btn" id="tab-btn-client-register" onclick="switchClientAuthTab('client-register')">
+          ✨ Đăng Ký Thẻ Mới
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Form Đăng nhập Khách hàng (SĐT + Mật khẩu) -->
+        <form id="client-login-form" onsubmit="handleClientLogin(event)">
+          <div class="form-group">
+            <label>Số điện thoại hội viên</label>
+            <input type="tel" id="client-login-phone" class="form-control" placeholder="0912345678" value="0912345678" required>
+          </div>
+          <div class="form-group">
+            <label>Mật khẩu</label>
+            <div class="password-input-group">
+              <input type="password" id="client-login-pass" class="form-control" placeholder="Nhập mật khẩu" value="123456" required>
+              <button type="button" class="btn-toggle-pass" onclick="togglePasswordVisibility('client-login-pass', this)">👁️</button>
+            </div>
+          </div>
+          <div class="quick-demo-phones mb-3">
+            <span>Tài khoản hội viên mẫu: </span>
+            <a href="javascript:void(0)" onclick="setLoginQuick('0912345678', '123456')">Trần Thanh Hải (Vàng)</a> •
+            <a href="javascript:void(0)" onclick="setLoginQuick('0987654321', '123456')">Nguyễn Thị Mai (Bạc)</a>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">🌸 Đăng Nhập Vào Tài Khoản</button>
+
+          <!-- Dòng cuối: Chưa có tài khoản? Đăng ký -->
+          <div class="text-center mt-3" style="padding-top: 12px; border-top: 1px solid #E5E7EB; font-size: 0.92rem;">
+            Chưa có thẻ hội viên? <a href="javascript:void(0)" onclick="switchClientAuthTab('client-register')" style="color: var(--pink-primary); font-weight: 700; text-decoration: underline;">Đăng ký ngay (+50 điểm)</a>
+          </div>
+        </form>
+
+        <!-- Form Đăng ký Khách hàng (Họ tên, SĐT, Mật khẩu, Xác nhận, Email) -->
+        <form id="client-register-form" class="hidden" onsubmit="handleClientRegister(event)">
+          <div class="form-group">
+            <label>Họ và tên của bạn <span class="text-danger">*</span></label>
+            <input type="text" id="client-reg-name" class="form-control" placeholder="VD: Lê Thị Hoa" required>
+          </div>
+          <div class="form-group">
+            <label>Số điện thoại <span class="text-danger">*</span></label>
+            <input type="tel" id="client-reg-phone" class="form-control" placeholder="VD: 0945678999" required>
+          </div>
+          <div class="form-group">
+            <label>Mật khẩu (tối thiểu 6 ký tự) <span class="text-danger">*</span></label>
+            <div class="password-input-group">
+              <input type="password" id="client-reg-pass" class="form-control" placeholder="Tối thiểu 6 ký tự" minlength="6" required>
+              <button type="button" class="btn-toggle-pass" onclick="togglePasswordVisibility('client-reg-pass', this)">👁️</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Xác nhận mật khẩu <span class="text-danger">*</span></label>
+            <div class="password-input-group">
+              <input type="password" id="client-reg-pass-confirm" class="form-control" placeholder="Nhập lại mật khẩu" minlength="6" required>
+              <button type="button" class="btn-toggle-pass" onclick="togglePasswordVisibility('client-reg-pass-confirm', this)">👁️</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email (tùy chọn)</label>
+            <input type="email" id="client-reg-email" class="form-control" placeholder="email@gmail.com">
+          </div>
+          <p class="small text-muted mb-3">🎁 Đăng ký ngay hôm nay để nhận ngay thẻ Hạng Đồng và 50 điểm chào mừng!</p>
+          <button type="submit" class="btn btn-primary btn-block">🎉 Tạo Thẻ &amp; Nhận 50 Điểm</button>
+
+          <!-- Dòng cuối: Đã có tài khoản? Đăng nhập -->
+          <div class="text-center mt-3" style="padding-top: 12px; border-top: 1px solid #E5E7EB; font-size: 0.92rem;">
+            Đã có tài khoản? <a href="javascript:void(0)" onclick="switchClientAuthTab('client-login')" style="color: var(--pink-primary); font-weight: 700; text-decoration: underline;">Đăng nhập</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL XÁC NHẬN & ĐỔI VOUCHER THÀNH CÔNG ==================== -->
+  <div id="reward-success-modal" class="modal-overlay hidden">
+    <div class="modal-box text-center" style="max-width: 420px;">
+      <div style="font-size: 3rem; margin-bottom: 8px;">🎉</div>
+      <h3 class="text-pink">Đổi Ưu Đãi Thành Công!</h3>
+      <p id="reward-success-desc" class="mt-2 text-muted">Bạn đã đổi thành công 01 voucher ưu đãi.</p>
+      
+      <div class="voucher-issued-card">
+        <span class="voucher-sub">MÃ VOUCHER CỦA BẠN:</span>
+        <div class="voucher-code-big" id="issued-voucher-code">UD-8K9F2A</div>
+        <span class="voucher-validity">Hiệu lực sử dụng: Toàn hệ thống caPHEnue</span>
+      </div>
+
+      <div class="mt-3" style="display: flex; gap: 8px;">
+        <button class="btn btn-outline" onclick="closeRewardSuccessModal()">Đóng</button>
+        <button class="btn btn-primary" onclick="useVoucherNow()">Dùng Ngay Khi Đặt Món</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL HÓA ĐƠN THÀNH CÔNG (ONLINE) ==================== -->
+  <div id="receipt-modal" class="modal-overlay hidden">
+    <div class="modal-box receipt-box">
+      <div class="receipt-print-area" id="receipt-content"></div>
+      <div class="receipt-actions">
+        <button class="btn btn-outline" onclick="closeReceiptModal()">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="main-footer">
+    <div class="footer-container">
+      <div class="footer-left">
+        <div class="footer-brand">
+          <img src="images/logo_hoa_dao.png" alt="Logo" class="footer-logo">
+          <span>caPHEnue • Hệ Thống Quản Lý Khách Hàng Thân Thiết</span>
+        </div>
+      </div>
+      <div class="footer-right">
+        <p>© 2026 caPHEnue. All rights reserved.</p>
+        <p style="margin-top: 6px;">
+          <a href="admin.html" class="footer-admin-link" style="color: #9CA3AF; font-size: 0.82rem; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; transition: color 0.2s;" onmouseover="this.style.color='#E8618C'" onmouseout="this.style.color='#9CA3AF'">
+            🔒 Cổng Nội Bộ &amp; Thu Ngân POS →
+          </a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="api.js" defer></script>
+  <script src="app.js" defer></script>
+</body>
+</html>
